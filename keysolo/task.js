@@ -24,6 +24,38 @@ class Game {
       В случае правильного ввода слова вызываем this.success()
       При неправильном вводе символа - this.fail();
      */
+    let currentWord = this.wordElement.querySelectorAll('.symbol')
+    const currentWordArray = [...currentWord];
+    
+    document.addEventListener('keydown', (event) => {
+
+      this.pressedSymbol = event.key; // получение символа по нажатию на кнопку клавиатуры
+      console.log(this.currentSymbol.innerHTML.toLowerCase());
+      console.log(this.pressedSymbol)
+      console.log(this.currentSymbol.innerHTML.toLowerCase() === this.pressedSymbol.toLowerCase()) // точка контроля: нажатая кнопка выдаёт символ, равный текущему или нет?
+        
+      console.log('начало проверки')
+      if (this.currentSymbol.innerHTML.toLowerCase() !== this.pressedSymbol.toLowerCase()) {
+            
+        this.fail()
+        console.log('нажата не та клавиша!!!')
+        
+        } else {
+            
+            this.currentSymbol.classList.remove('symbol_current'); // удаляем класс "текущий символ" у текущего элемента
+          
+            if (currentWordArray.indexOf(this.currentSymbol) < currentWord.length -1) {
+              currentWord[
+              currentWordArray.indexOf(this.currentSymbol) + 1
+              ].classList.add('symbol_current'); // присваиваем класс "текущий символ" следующему элементу
+              
+              //this.currentSymbol.nextElementSibling.classList.add('symbol_current');  ПОЧЕМУ эта строка кода, при замене на неё строк 48-50, после второй проверки слова ВЫДАЁТ ОШИБКУ??? (значение null)
+            }
+
+          this.success()
+
+        };
+      });
   }
 
   success() {
@@ -33,7 +65,7 @@ class Game {
       return;
     }
 
-    if (++this.winsElement.textContent === 10) {
+    if (++this.winsElement.textContent === 2) {  //проверка на два правильно введённых слова
       alert('Победа!');
       this.reset();
     }
@@ -41,7 +73,7 @@ class Game {
   }
 
   fail() {
-    if (++this.lossElement.textContent === 5) {
+    if (++this.lossElement.textContent === 5) { //проверка на пять неправильных введённых символов
       alert('Вы проиграли!');
       this.reset();
     }
@@ -49,9 +81,9 @@ class Game {
   }
 
   setNewWord() {
-    const word = this.getWord();
+    const word = this.getWord(); // новое слово
 
-    this.renderWord(word);
+    this.renderWord(word); // перезапись нового слова в элемент 'word'
   }
 
   getWord() {
@@ -68,21 +100,21 @@ class Game {
         'love',
         'javascript'
       ],
-      index = Math.floor(Math.random() * words.length);
+      index = Math.floor(Math.random() * words.length); // случайная выборка слова из массива
 
-    return words[index];
+    return words[index]; // возвращение(вывод) выбранного слова
   }
 
-  renderWord(word) {
+  renderWord(word) { // метод посимвольной перезаписи нового слова в элемент 'word'
     const html = [...word]
       .map(
         (s, i) =>
-          `<span class="symbol ${i === 0 ? 'symbol_current': ''}">${s}</span>`
+          `<span class="symbol ${i === 0 ? 'symbol_current': ''}">${s}</span>` // заполнение элемента 'word' span-символами, с присвоением первому символу класса 'symbol_current'
       )
-      .join('');
+      .join(''); // объединение символов массива в единую строку(слово)
     this.wordElement.innerHTML = html;
 
-    this.currentSymbol = this.wordElement.querySelector('.symbol_current');
+    this.currentSymbol = this.wordElement.querySelector('.symbol_current'); // поиск текущего символа
   }
 }
 
